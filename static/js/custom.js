@@ -9,21 +9,41 @@ var Songs = {
         this.playlist = config.playlist;
         this.songsFolder = config.songsFolder;
         this.songClassName = config.songClassName;
-        this.audio = config.audio;
+        //this.audio = config.audio;
+        this.player = config.player;
         this.controls = config.controls;
         this.mainTemplate = config.mainTemplate;
         this.api_key = config.api_key;
         this.fetchSongs();
+        this.initJplayer();
         this.declarations();
         this.colorBGImage(false);
         this.keyboardBindings();
+        this.preloadImages();
+    },
+
+    initJplayer: function() {
+        this.player.jPlayer({
+            ready: function(){
+                //$(this).jPlayer("setMedia", {mp3: ""});
+            },
+            swfPath: "/static/js",
+            supplied: "mp3"
+        });
+    },
+
+    preloadImages: function() {
+        var arr = ["/static/img/bg/dark.jpg", "/static/img/bg/light.jpg"];
+        $.each(arr, function(index, img){
+            $(new Image())[0].src = img;
+        });
     },
 
     colorBGImage: function(color) {
         if ( !color ) {
-            $(this.container).css('background-image', 'url(/static/img/bg/1.jpg)'); 
+            $(this.container).css('background-image', 'url(/static/img/bg/dark.jpg)'); 
         } else {
-            $(this.container).css('background-image', 'url(/static/img/bg/2.jpg)');
+            $(this.container).css('background-image', 'url(/static/img/bg/light.jpg)');
         }
     },
 
@@ -59,13 +79,10 @@ var Songs = {
 
         self.currentSongIndex = songIndex; 
 
-        // set audio properties
-        self.audio.src = currentSong.filename;
+        self.player.jPlayer("setMedia", {mp3: currentSong.filename});
+        self.player.jPlayer('play');
         self.isPaused = false;
-        self.audio.play();
         
-        console.log(self.audio.duration);
-
         $(self.sidebar).find('.pause').removeClass('play');
 
         self.colorBGImage(true);
@@ -86,11 +103,11 @@ var Songs = {
 
         if (!self.isPaused) {
             // playing
-            self.audio.pause();
+            self.player.jPlayer('pause');
             $(pauseBtn).addClass('play');
         } else {
             // paused
-            self.audio.play();
+            self.player.jPlayer('play');
             $(pauseBtn).removeClass('play');
         };
 
@@ -132,7 +149,7 @@ var Songs = {
             self.playNextSong();
         });
 
-        $(self.audio).on('ended', function(){
+        $(self.player).bind($.jPlayer.event.ended, function(event){
             self.playNextSong();
         });
     },
@@ -186,7 +203,8 @@ var Songs = {
         container: $('#main'),
         songsFolder: '/static/songs/',
         songClassName: '.song',
-        audio: $('#loopplayer')[0],
+        //audio: $('#loopplayer')[0],
+        player: $('#player'),
         controls: $('.buttons'),
         api_key: '3874c10e21f44bf92c4e4bfafe429c15' // TODO: remove before pushing on github
     });

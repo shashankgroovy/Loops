@@ -177,15 +177,16 @@ ul {
 
 #main {
     width: 74%;
+    position: relative;
     color: white;
     float: right;
-      background: url(/static/img/bg/1.jpg) no-repeat top center fixed; 
+      background: url(/static/img/bg/dark.jpg) no-repeat top center fixed; 
       webkit-background-size: cover;
       moz-background-size: cover;
       o-background-size: cover;
       background-size: cover;
       .transition(background,  1s);
-    .trackinfo {
+      .trackinfo {
         margin: 30px;
         img {
             border: 5px solid white;
@@ -260,10 +261,17 @@ ul {
    li {
     float: left;
     margin:6px 6px 0 0;
-    background: @accent_color;
+    background: darken(@accent_color, 5%);
     border-radius: 3px;
     padding: 5px 10px;
    } 
 }
 
 audio { display: none; }
+
+#loader {
+    position: absolute;
+    display: none;
+    top: 200px;
+    left: 200px;
+}
